@@ -1,4 +1,4 @@
-package com.example.olx.backend.user.DTO;
+package com.example.olx.backend.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

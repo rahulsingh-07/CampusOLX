@@ -1,5 +1,6 @@
 package com.example.olx.backend.product;
 
+import com.example.olx.backend.user.UserModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class ProductModel {
     @GeneratedValue
     private UUID productId;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String productName;
 
     @Column(nullable = false)
@@ -26,8 +27,12 @@ public class ProductModel {
     private long price;
 
     @Lob
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private byte[] image;
 
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private UserModel user;
 }

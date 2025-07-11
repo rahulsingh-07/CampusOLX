@@ -1,10 +1,11 @@
 package com.example.olx.backend.user;
 
-import com.example.olx.backend.user.DTO.UserLoginDTO;
-import com.example.olx.backend.user.DTO.UserRegDTO;
+import com.example.olx.backend.exception.UserNotFoundException;
+import com.example.olx.backend.user.dto.UserLoginDTO;
+import com.example.olx.backend.user.dto.UserRegDTO;
 import com.example.olx.backend.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,47 +23,46 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     UserModel user = new UserModel();
+    public static final String MESSAGE = "message";
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegDTO request) {
+    public ResponseEntity<Map<String,String>> register(@RequestBody UserRegDTO request) {
 
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "username is taken"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(MESSAGE, "username is taken"));
         }
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of("message", "password is not same"));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of(MESSAGE, "password is not same"));
         }
         if(!request.getEmail().endsWith("@nituk.ac.in")){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of("message", "login with collage email"));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of(MESSAGE, "login with collage email"));
         }
 
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
+        user.setEmail(request.getEmail());
         List<String> errors = getStringList(user);
 
         if (!errors.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of("message", errors.get(0)));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of(MESSAGE, errors.get(0)));
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         userRepository.save(user);
 
-        return ResponseEntity.ok(Map.of("message", "registered successfully"));
+        return ResponseEntity.ok(Map.of(MESSAGE, "registered successfully"));
     }
 
     public static List<String> getStringList(UserModel userModel) {
@@ -88,28 +88,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginDTO login) {
+    public ResponseEntity<Map<String,String>> login(@RequestBody UserLoginDTO login) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword())
             );
 
             if (authentication.isAuthenticated()) {
-                UserModel user = userRepository.findByUsername(login.getUsername())
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                UserModel loginuser = userRepository.findByUsername(login.getUsername())
+                        .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-                String jwt = jwtUtil.generateToken(user.getUsername(), user.getRole());
+                String jwt = jwtUtil.generateToken(loginuser.getUsername(), loginuser.getRole());
 
                 return ResponseEntity.ok(Map.of(
                         "token", jwt,
-                        "message", "Login successful"
+                        MESSAGE, "Login successful"
                 ));
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Authentication failed"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(MESSAGE, "Authentication failed"));
             }
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(MESSAGE, "Invalid username or password"));
         }
     }
 }

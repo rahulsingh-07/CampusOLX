@@ -1,6 +1,5 @@
-package com.example.olx.backend.user.DTO;
+package com.example.olx.backend.user.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

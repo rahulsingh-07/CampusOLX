@@ -15,7 +15,7 @@ public class JwtUtil {
 
     @Value("${my.api.key}")
     private String apiKey;
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 day
+    private static final long EXPIRATION_TIME = 2880000; // 1 day
     private SecretKey key;
 
     @PostConstruct
