@@ -1,13 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcHome } from "react-icons/fc";
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter' && searchQuery.trim() !== '') {
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
     return (
         <div className="navbar shadow-sm bg-amber-200">
             <div className="flex-1">
                 <Link to="/" className="btn btn-ghost text-xl">
-                    <FcHome size={40}/>
+                    <FcHome size={40} />
                 </Link>
             </div>
 
@@ -16,6 +31,9 @@ const Navbar = () => {
                     type="text"
                     placeholder="Search"
                     className="input input-bordered w-24 md:w-auto"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearch}
                 />
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
@@ -61,15 +79,40 @@ const Navbar = () => {
                                 </svg>
                             </label>
                         </li>
-                        <li>
-                            <Link to="/dashboard">Dashboard</Link>
-                        </li>
-                        <li>
-                            <Link to="/login">Login</Link>
-                        </li>
-                        <li>
-                            <Link to="/register">Sign Up</Link>
-                        </li>
+                        {!user && (
+                            <>
+                                <Link className='hover:bg-gray-200 p-2 rounded' to="/login">Login</Link>
+
+                                <Link className='hover:bg-gray-200 p-2 rounded' to="/register">Sign Up</Link>
+                            </>
+                        )}
+                        {user && (
+                            <>
+                                <Link
+                                    to="/dashboard"
+                                    className="hover:bg-gray-200 px-4 py-2 rounded"
+                                >
+                                    Dhasboard
+                                </Link>
+
+                                {user && user.role.includes("ROLE_ADMIN") && (
+                                    <Link
+                                        to="/admin"
+                                        className="hover:bg-gray-200 px-4 py-2 rounded"
+                                    >
+                                        Admin
+                                    </Link>
+                                )}
+
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 font-medium ml-4"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        )}
+
                     </ul>
                 </div>
             </div>

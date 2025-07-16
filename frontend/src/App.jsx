@@ -2,25 +2,41 @@ import React from 'react'
 import "./index.css"
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Search from './components/Search'
+import { Route, Routes } from 'react-router-dom'
 import Dashboard from './auth/Dashboard'
 import Register from './auth/Register'
 import Login from './auth/Login'
 import Home from './pages/Home'
+import ProductDetails from './pages/ProjuctDetails'
+import PrivateRoute from './components/PrivateRoute';
+import { ToastContainer } from 'react-toastify'
+
+import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
 
   return (
     <div>
-      <BrowserRouter>
       <Navbar /> {/* ✅ Show navbar on all pages */}
+
       <Routes>
-        <Route path='/' element={<Home/>}/>
+        <Route path="/" element={<Home />} />
+        
+      <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/productdetails/:id" element={<ProductDetails />} />
       </Routes>
-      <Footer/>
-    </BrowserRouter>
+      <ToastContainer theme="colored" position="top-right" autoClose={3000} />
+      <Footer />
     </div>
   )
 }

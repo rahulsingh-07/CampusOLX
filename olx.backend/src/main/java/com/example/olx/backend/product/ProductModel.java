@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -26,9 +27,11 @@ public class ProductModel {
     @Column(nullable = false)
     private long price;
 
-    @Lob
-//    @Column(nullable = false)
-    private byte[] image;
+    private String imageUrl;
+
+    private String cloudinaryPublicId;
+
+    private LocalDateTime uploadedAt;
 
     private String description;
 

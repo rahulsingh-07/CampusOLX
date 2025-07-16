@@ -41,10 +41,6 @@ public class AuthController {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(MESSAGE, "username is taken"));
         }
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of(MESSAGE, "password is not same"));
-        }
         if(!request.getEmail().endsWith("@nituk.ac.in")){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(Map.of(MESSAGE, "login with collage email"));
         }
