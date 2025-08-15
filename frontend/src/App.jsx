@@ -13,6 +13,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css';
+import ReviewPage from './components/ReviewPage'
 const App = () => {
 
   return (
@@ -25,6 +26,7 @@ const App = () => {
       <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/allreviews' element={<ReviewPage/>}/>
         <Route
           path="/dashboard"
           element={

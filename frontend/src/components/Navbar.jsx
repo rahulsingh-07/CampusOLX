@@ -35,12 +35,12 @@ const Navbar = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearch}
                 />
-                <div className="dropdown dropdown-end">
+                <div className="dropdown dropdown-end border-2 border-gray-200">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
                             <img
                                 alt="User Avatar"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png"
                             />
                         </div>
                     </div>
@@ -88,25 +88,28 @@ const Navbar = () => {
                         )}
                         {user && (
                             <>
-                                <Link
+                                <button  className="  px-4 py-2 rounded hover:bg-gray-200 font-medium  border-gray-200 border-2">
+                                    <Link
                                     to="/dashboard"
-                                    className="hover:bg-gray-200 px-4 py-2 rounded"
                                 >
                                     Dhasboard
                                 </Link>
+                                </button>
 
                                 {user && user.role.includes("ROLE_ADMIN") && (
-                                    <Link
+                                
+                                        <Link
                                         to="/admin"
-                                        className="hover:bg-gray-200 px-4 py-2 rounded"
+                                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 font-medium w-full"
                                     >
                                         Admin
                                     </Link>
+                                    
                                 )}
 
                                 <button
                                     onClick={handleLogout}
-                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 font-medium ml-4"
+                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 font-medium "
                                 >
                                     Logout
                                 </button>

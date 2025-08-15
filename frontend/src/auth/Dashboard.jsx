@@ -8,6 +8,8 @@ const Dashboard = () => {
   const { user, token } = useAuth();
   const [products, setProducts] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [form, setForm] = useState({
     productName: '',
     productType: '',
@@ -33,6 +35,7 @@ const Dashboard = () => {
   }, [user, token]);
 
   const handleAdd = async () => {
+    if (isSubmitting) return;
     const { productName, productType, productDetails, price, imageFile } = form;
 
     if (!productName || !productType || !productDetails || !price || !imageFile) {
@@ -40,6 +43,7 @@ const Dashboard = () => {
       return;
     }
 
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append('username', user.username);
     formData.append('productName', productName);
@@ -64,6 +68,8 @@ const Dashboard = () => {
     } catch (err) {
       console.error('Upload error:', err);
       toast.error('Add failed');
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -159,9 +165,22 @@ const Dashboard = () => {
                 className="file-input file-input-bordered w-full mb-4"
               />
               <div className="flex justify-between">
-                <button className="btn btn-success" onClick={handleAdd}>Submit</button>
-                <button className="btn btn-outline" onClick={() => setShowPopup(false)}>Cancel</button>
+                <button
+                  className="btn btn-success flex items-center gap-2"
+                  onClick={handleAdd}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  )}
+                  {isSubmitting ? 'Uploading...' : 'Submit'}
+                </button>
+
+                <button className="btn btn-outline" onClick={() => setShowPopup(false)} disabled={isSubmitting}>
+                  Cancel
+                </button>
               </div>
+
             </div>
           </div>
         </div>
@@ -181,7 +200,7 @@ const Dashboard = () => {
             <div className="p-3 flex justify-between">
               <div>
                 <h2 className="card-title">{product.productName}</h2>
-              <p>₹{product.price}</p>
+                <p>₹{product.price}</p>
               </div>
               <div className="card-actions justify-end">
                 <button className="btn btn-error" onClick={() => handleDelete(product.id)}>

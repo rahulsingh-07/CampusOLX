@@ -1,6 +1,7 @@
 package com.example.olx.backend.user;
 
 import com.example.olx.backend.product.ProductModel;
+import com.example.olx.backend.review.ReviewModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,5 +37,9 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ProductModel> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ReviewModel> reviews = new ArrayList<>();
 
 }
