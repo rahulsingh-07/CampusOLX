@@ -82,15 +82,6 @@ const Login = () => {
 
           <div className="divider">OR</div>
 
-          <button className="btn btn-outline w-full">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Sign in with Google
-          </button>
-
           <p className="text-sm text-center">
             Don’t have an account?{" "}
             <Link to="/register" className="link link-primary">

@@ -193,15 +193,6 @@ const [otpLoading, setOtpLoading] = useState(false);
           </form>
           <div className="divider">OR</div>
 
-          <button className="btn btn-outline w-full">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="w-5 h-5 mr-2"
-            />
-            Sign up with Google
-          </button>
-
           <p className="text-sm text-center">
             Already have an account?{" "}
             <Link to="/login" className="link link-primary">
